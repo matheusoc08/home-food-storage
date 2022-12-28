@@ -57,6 +57,7 @@ namespace Controle_de_estoque.Controllers
             itemBanco.Peso = item.Peso;
             itemBanco.Quantidade = item.Quantidade;
             itemBanco.Preco = item.Preco;
+            itemBanco.Comprado = item.Comprado;
 
             _context.Update(itemBanco);
             _context.SaveChanges();
@@ -75,7 +76,48 @@ namespace Controle_de_estoque.Controllers
             return Ok("Item removido!");
         }
 
+        [HttpPost("adicionarEstoque")]
+        public ActionResult<List<EstoqueModel>> incluirListaEstoque()
+        {
+            var lista = _context.Lista.ToList();
 
+            foreach (var item in lista)
+            {
+                if (item.Comprado && !verificarItemEstoque(item))
+                {
+                    _context.Estoque.Add(new EstoqueModel
+                    {
+                        Nome = item.Nome,
+                        Descricao = item.Descricao,
+                        Peso = item.Peso,
+                        Quantidade = item.Quantidade,
+                        Preco = item.Preco
+                    });
+                }
+            }
 
+            _context.SaveChanges();
+
+            return Ok("Os itens comprados foram adicionados ao estoque.");
+        }
+
+        public Boolean verificarItemEstoque(ListaModel item)
+        {
+            var estoque = _context.Estoque.ToList();
+            bool itemAlterado = false;
+
+            foreach (var itemEstoque in estoque)
+            {
+                if (itemEstoque.Nome.Equals(item.Nome))
+                {
+                    itemEstoque.Quantidade++;
+                    itemAlterado = true;
+                }
+            }
+
+            _context.SaveChanges();
+
+            return itemAlterado;
+        }
     }
 }
