@@ -13,5 +13,6 @@ namespace Controle_de_estoque.src.Models
         public double Peso { get; set; }
         public int Quantidade { get; set; }
         public double Preco { get; set; }
+        public bool Comprado { get; set; }
     }
 }
