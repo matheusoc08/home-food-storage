@@ -93,30 +93,25 @@ namespace Controle_de_estoque.Controllers
                         Quantidade = item.Quantidade,
                         Preco = item.Preco
                     });
+                    _context.SaveChanges();
                 }
             }
-
-            _context.SaveChanges();
 
             return Ok("Os itens comprados foram adicionados ao estoque.");
         }
 
         public Boolean verificarItemEstoque(ListaModel item)
         {
-            var estoque = _context.Estoque.ToList();
+            var itemEstoque = _context.Estoque.Where(x => x.Nome == item.Nome).SingleOrDefault();
             bool itemAlterado = false;
 
-            foreach (var itemEstoque in estoque)
+            if (itemEstoque != null)
             {
-                if (itemEstoque.Nome.Equals(item.Nome))
-                {
-                    itemEstoque.Quantidade++;
-                    itemAlterado = true;
-                }
+                itemEstoque.Quantidade += item.Quantidade;
+                itemAlterado = true;
             }
 
             _context.SaveChanges();
-
             return itemAlterado;
         }
     }
