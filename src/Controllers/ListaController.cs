@@ -97,6 +97,7 @@ namespace Controle_de_estoque.Controllers
                 }
             }
 
+            limparLista();
             return Ok("Os itens comprados foram adicionados ao estoque.");
         }
 
@@ -113,6 +114,14 @@ namespace Controle_de_estoque.Controllers
 
             _context.SaveChanges();
             return itemAlterado;
+        }
+
+        public void limparLista()
+        {
+            List<ListaModel> lista = _context.Lista.ToList();
+
+            _context.Lista.RemoveRange(lista);
+            _context.SaveChanges();
         }
     }
 }
